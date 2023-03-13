@@ -2,6 +2,7 @@ package com.app.petsvets.entity;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +18,7 @@ public class Pet {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "pet_id", nullable = false)
 	private Integer petId;
 	private String petType;
 	@OneToMany(mappedBy = "pet")

@@ -45,7 +45,7 @@ public class UserPetServiceImpl implements UserPetService {
 
 	@Override
 	public List<UserPet> getPetsByUserId(Integer userId) {
-		List<UserPet> userPets = userPetRepo.findByUserId(userId);
+		List<UserPet> userPets = userPetRepo.findByUserUserId(userId);
 		return userPets;
 	}
 

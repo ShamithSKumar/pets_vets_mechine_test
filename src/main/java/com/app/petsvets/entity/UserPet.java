@@ -20,10 +20,10 @@ public class UserPet {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer userpetId;
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="user", referencedColumnName = "userId")
+    @JoinColumn(name="user", referencedColumnName = "user_id")
 	private User user;
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="pet", referencedColumnName = "petId")
+    @JoinColumn(name="pet", referencedColumnName = "pet_id")
 	private Pet pet;
 	private String petName;
 }
