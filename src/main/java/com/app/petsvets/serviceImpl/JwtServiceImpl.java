@@ -25,12 +25,25 @@ public class JwtServiceImpl {
 		return createToken(claims, username);
 	}
 
+	/**
+	 * Method uses username, role, expiration, signKey and 
+	 * the algorithm to generate the token
+	 * 
+	 * @param claims
+	 * @param username
+	 * @return token returns generated token
+	 */
 	private String createToken(Map<String, Object> claims, String username) {
 		return Jwts.builder().setClaims(claims).setSubject(username).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
 				.signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
 	}
 
+	/**
+	 * Method creates a new key based on the secret key provided
+	 * 
+	 * @return signKey from secret key provided.
+	 */
 	private Key getSignKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(KEY);
 		return Keys.hmacShaKeyFor(keyBytes);

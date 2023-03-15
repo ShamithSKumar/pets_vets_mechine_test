@@ -34,6 +34,13 @@ public class SecurityConfig {
 		return new UserServiceImpl();
 	}
 	
+	/**
+	 * SecurityFilterChain created as as bean to match and 
+	 * decide which request matcher should be allowed
+	 * @param http
+	 * @return securityFilterChain with details to filter and match requests
+	 * @throws Exception
+	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable()
@@ -41,7 +48,7 @@ public class SecurityConfig {
 				.requestMatchers("/user/login", "/user/create","/user/login").permitAll()
 				.and()
 				.authorizeHttpRequests()
-				.requestMatchers("/user/**").authenticated()
+				.requestMatchers("/user/**","/pet/**","/userpet/**").authenticated()
 				.and()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -56,6 +63,10 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+	/**
+	 * To make sure the login user is valid and authenticated
+	 * @return
+	 */
 	@Bean
 	public AuthenticationProvider authProvider() {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

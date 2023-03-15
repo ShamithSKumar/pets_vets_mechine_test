@@ -26,6 +26,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	@Autowired
 	private UserServiceImpl userService;
 	
+	/**
+	 * {@inheritDoc}
+	 * To validate the token passed and 
+	 * verify the user available in the token is a valid user or not
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {

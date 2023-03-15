@@ -17,33 +17,64 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.petsvets.model.UserPetModel;
 import com.app.petsvets.service.UserPetService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/userpet")
 public class UserPetController {
 
 	@Autowired
 	private UserPetService userPetService;
-	
+
+	/**
+	 * To create new user and pet
+	 * 
+	 * @param userPet the details pets and user for mapping
+	 * @return UserPetModel with created user pet details
+	 */
 	@PostMapping("/create")
 	public ResponseEntity<UserPetModel> createUserPet(@RequestBody() UserPetModel userPet) {
+		log.info("Enabled createUserPet endpoint");
 		UserPetModel userPetCreated = userPetService.createUserPet(userPet);
 		return new ResponseEntity<UserPetModel>(userPetCreated, HttpStatus.OK);
 	}
-	
+
+	/**
+	 * To list pets mapped for an user
+	 * 
+	 * @param userName user name to retrieve all the mapped pets
+	 * @return
+	 */
 	@GetMapping("/list/{userName}")
-	public ResponseEntity<List<UserPetModel>> getPetsByUserId(@PathVariable String userName) {
-		List<UserPetModel> userPets = userPetService.getPetsByUserId(userName);
-		return new ResponseEntity<List<UserPetModel>>(userPets, HttpStatus.OK); 
+	public ResponseEntity<List<UserPetModel>> getPetsByUser(@PathVariable String userName) {
+		log.info("Enabled getPetsByUser endpoint");
+		List<UserPetModel> userPets = userPetService.getPetsByUser(userName);
+		return new ResponseEntity<List<UserPetModel>>(userPets, HttpStatus.OK);
 	}
-	
+
+	/**
+	 * To update user pet details
+	 * 
+	 * @param userPet pet details which needs to modified
+	 * @return String Success message
+	 */
 	@PutMapping("/update")
 	public ResponseEntity<String> updateUserPet(@RequestBody UserPetModel userPet) {
+		log.info("Enabled updateUserPet endpoint");
 		return new ResponseEntity<String>(userPetService.updateUserPet(userPet), HttpStatus.OK);
 	}
-	
+
+	/**
+	 * To delete pet details mapped against a user
+	 * 
+	 * @param id user pet mapped id to delete
+	 * @return String Success message
+	 */
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteUserPet(@PathVariable Integer id) {
+		log.info("Enabled deleteUserPet endpoint");
 		return new ResponseEntity<String>(userPetService.deleteUserPet(id), HttpStatus.OK);
 	}
-	
+
 }

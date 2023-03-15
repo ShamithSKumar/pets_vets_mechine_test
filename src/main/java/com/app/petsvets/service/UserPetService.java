@@ -8,7 +8,7 @@ public interface UserPetService {
 
 	UserPetModel createUserPet(UserPetModel userPet);
 
-	List<UserPetModel> getPetsByUserId(String userName);
+	List<UserPetModel> getPetsByUser(String userName);
 
 	String updateUserPet(UserPetModel userPet);
 

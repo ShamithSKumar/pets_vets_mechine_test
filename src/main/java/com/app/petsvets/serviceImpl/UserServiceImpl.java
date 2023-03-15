@@ -11,12 +11,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.app.petsvets.config.CustomException;
+import com.app.petsvets.config.EmptyArgumentException;
 import com.app.petsvets.entity.User;
 import com.app.petsvets.model.UserDetailsModel;
 import com.app.petsvets.model.UserModel;
 import com.app.petsvets.repository.UserRepository;
 import com.app.petsvets.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -28,13 +33,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private static final String ROLE = "ROLE_USER";
 	
+	/**
+	 * {@inheritDoc}
+	 * To get user details from db using user name
+	 * 
+	 * @param userName user name for fetching user details
+	 * @return userDetailsModel the user details is then mapped 
+	 * to UserDetailsModel class which implements spring security UserDetails class
+	 */
 	@Override
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String userName) {
 		Optional<User> user = userRepo.findByUserName(userName);
 		return user.map(UserDetailsModel::new)
 				.orElseThrow(()->new UsernameNotFoundException("User not found "+userName));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * To get all the users from db
+	 * 
+	 * @return userList list of users
+	 */
 	@Override
 	public List<UserModel> getAllUsers() {
 		Iterable<User> users = userRepo.findAllByRole(ROLE);
@@ -51,10 +70,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return userList;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * To create new user, the password is encoded before saving to db
+	 * 
+	 * @param user User entity to create user
+	 * @return String user created message
+	 * @throws EmptyArgumentException
+	 */
 	@Override
 	public String createUser(User user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		userRepo.save(user);
+		if (user != null) {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			userRepo.save(user);
+		} else {
+			log.error("User entity cannot be empty");
+			throw new EmptyArgumentException("User data cannot be empty");
+		}
 		return "Üser created";
 	}
 
@@ -63,6 +95,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return userRepo.findByUserName(userName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * To get user by unique id
+	 * 
+	 * @param id unique user id
+	 * @return userModel user entity is mapped to user model
+	 * @throws CustomException
+	 */
 	@Override
 	public UserModel getUser(Integer id) {
 		Optional<User> user = userRepo.findById(id);
@@ -74,7 +114,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			userModel.setPhone(user.get().getPhone());
 			userModel.setRole(user.get().getRole());
 		} else {
-			// throw error
+			log.info("No user available for id "+id);
+			throw new CustomException("No user available for id "+id);
 		}
 		return userModel;
 	}
