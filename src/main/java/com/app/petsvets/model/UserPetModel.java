@@ -6,7 +6,7 @@ import lombok.Data;
 public class UserPetModel {
 
 	private Integer userPetId;
-	private UserModel user;
-	private PetTypeModel pet;
-	private String petName;
+	private PetModel pet;
+	private Integer numberOfPets;
+	private String userName;
 }

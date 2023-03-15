@@ -23,8 +23,7 @@ public class PetController {
 	
 	@GetMapping("/list")
 	public ResponseEntity<List<Pet>> getPetList() {
-		List<Pet> pets = petService.getPetList(); 
-		return new ResponseEntity<List<Pet>>(pets, HttpStatus.OK);
+		return new ResponseEntity<List<Pet>>(petService.getPetList(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/create")

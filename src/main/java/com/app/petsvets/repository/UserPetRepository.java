@@ -9,6 +9,6 @@ import com.app.petsvets.entity.UserPet;
 public interface UserPetRepository extends CrudRepository<UserPet, Integer>{
 
 
-	List<UserPet> findByUserUserId(Integer userId);
+	List<UserPet> findByUserUserName(String userName);
 
 }

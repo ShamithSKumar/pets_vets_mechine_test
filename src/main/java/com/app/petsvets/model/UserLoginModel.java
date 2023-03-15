@@ -1,11 +1,10 @@
-package com.app.petsvets.entity;
+package com.app.petsvets.model;
 
 import lombok.Data;
 
 @Data
-public class UserLogin {
+public class UserLoginModel {
 
 	private String userName;
 	private String password;
-	private String email;
 }
