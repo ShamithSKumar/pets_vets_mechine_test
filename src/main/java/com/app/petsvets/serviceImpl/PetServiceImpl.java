@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.petsvets.config.EmptyArgumentException;
 import com.app.petsvets.entity.Pet;
+import com.app.petsvets.model.PetModel;
 import com.app.petsvets.repository.PetRepository;
 import com.app.petsvets.service.PetService;
 
@@ -22,14 +24,28 @@ public class PetServiceImpl implements PetService {
 	}
 
 	@Override
-	public Pet CreatePet(Pet pet) {
-		Pet petCreated = petRepo.save(pet);
-		return petCreated;
-	}
-
-	@Override
 	public Optional<Pet> getPetsById(Integer petId) {
 		return petRepo.findById(petId);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * To create new pet
+	 * 
+	 * @param petModel pet details
+	 * @return petModel
+	 */
+	@Override
+	public PetModel createPet(PetModel petModel) {
+		if (!petModel.getPetType().isEmpty()) {
+			Pet pet = new Pet();
+			pet.setPetType(petModel.getPetType());
+			pet = petRepo.save(pet);
+			petModel.setPetId(pet.getPetId());
+		} else {
+			throw new EmptyArgumentException("Pet type cannot be empty");
+		}
+		return petModel;
 	}
 	
 	

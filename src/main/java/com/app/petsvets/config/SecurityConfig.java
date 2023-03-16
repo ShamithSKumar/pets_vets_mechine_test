@@ -55,6 +55,11 @@ public class SecurityConfig {
 				.and()
 				.authenticationProvider(authProvider())
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+				.logout()
+				.logoutSuccessUrl("/user/logout")
+				.invalidateHttpSession(true)
+				.deleteCookies("JESSIONID")
+				.and()
 				.build();
 	}
 	

@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.app.petsvets.entity.Pet;
+import com.app.petsvets.model.PetModel;
 
 public interface PetService {
 
 	List<Pet> getPetList();
 
-	Pet CreatePet(Pet pet);
+	PetModel createPet(PetModel pet);
 
 	Optional<Pet> getPetsById(Integer petId);
 

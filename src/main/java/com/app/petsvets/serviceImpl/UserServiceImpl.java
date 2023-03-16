@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,8 +45,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String userName) {
 		Optional<User> user = userRepo.findByUserName(userName);
-		return user.map(UserDetailsModel::new)
-				.orElseThrow(()->new UsernameNotFoundException("User not found "+userName));
+		if (!user.isEmpty()) {
+			return user.map(UserDetailsModel::new)
+					.orElseThrow(()->new UsernameNotFoundException("User not found "+userName));
+		} else {
+			throw new EmptyArgumentException("User not found "+userName);
+		}
+		
 	}
 
 	/**
@@ -74,20 +80,39 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	 * {@inheritDoc}
 	 * To create new user, the password is encoded before saving to db
 	 * 
-	 * @param user User entity to create user
+	 * @param user User model with user details
 	 * @return String user created message
 	 * @throws EmptyArgumentException
 	 */
 	@Override
-	public String createUser(User user) {
-		if (user != null) {
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			userRepo.save(user);
+	public String createUser(UserModel userModel) {
+		if (userModel != null) {
+			userRepo.save(setUser(userModel));
 		} else {
 			log.error("User entity cannot be empty");
 			throw new EmptyArgumentException("User data cannot be empty");
 		}
 		return "Üser created";
+	}
+
+	/**
+	 * Method to set user entity for update and create
+	 * 
+	 * @param userModel for user details
+	 * @return user entity
+	 */
+	private User setUser(UserModel userModel) {
+		User user = new User();
+		if (userModel.getId() == null) {
+			user.setPassword(passwordEncoder.encode(userModel.getPassword()));
+			user.setRole(ROLE);
+		} else {
+			user.setUserId(userModel.getId());
+		}
+		user.setEmail(userModel.getEmail());
+		user.setPhone(userModel.getPhone());
+		user.setUserName(userModel.getUserName());
+		return user;
 	}
 
 	@Override
@@ -120,10 +145,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return userModel;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * To update existing user, 
+	 * both ROLE_ADMIN and ROLE_USER can update the user
+	 * but the ROLE_ADMIN cannot update the userName
+	 * 
+	 * @param userModel to get user details
+	 * @param authentication to get userName of the login user
+	 * @return String user updated message
+	 */
 	@Override
-	public String updateUser(User user) {
-		userRepo.save(user);
+	public String updateUser(UserModel userModel, Authentication authentication) {
+		String userRole = getUserRole(authentication);
+		if (userRole.matches("ROLE_ADMIN")) {
+			Optional<User> user = userRepo.findByUserName(userModel.getUserName());
+			if (!user.isPresent()) {
+				throw new CustomException("Admin cannot update user name");				
+			} else {
+				userRepo.save(setUser(userModel));
+			}
+		}
 		return "User updated successfully";
+	}
+
+	private String getUserRole(Authentication authentication) {
+		return authentication.getAuthorities().stream().findFirst().toString();
 	}
 
 }
