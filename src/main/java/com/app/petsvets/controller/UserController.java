@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.petsvets.model.ResponseModel;
 import com.app.petsvets.model.UserLoginModel;
 import com.app.petsvets.model.UserModel;
+import com.app.petsvets.service.JwtService;
 import com.app.petsvets.service.UserService;
-import com.app.petsvets.serviceImpl.JwtServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +35,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private JwtServiceImpl jwtService;
+	private JwtService jwtService;
 	@Autowired
 	private AuthenticationManager authManager;
 
@@ -54,7 +54,7 @@ public class UserController {
 		Authentication auth = authManager
 				.authenticate(new UsernamePasswordAuthenticationToken(login.getUserName(), login.getPassword()));
 		if (auth.isAuthenticated()) {
-			result.setData(jwtService.generateToken(login.getUserName()));
+			result.setData(jwtService.generateToken(login.getUserName(), auth));
 			result.setMessage("Token created successfully");
 			result.setStatus(true);
 			return new ResponseEntity<ResponseModel>(result, HttpStatus.OK);

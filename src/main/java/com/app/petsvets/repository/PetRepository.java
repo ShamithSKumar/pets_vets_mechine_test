@@ -8,4 +8,6 @@ import com.app.petsvets.entity.Pet;
 @Repository
 public interface PetRepository extends CrudRepository<Pet, Integer>{
 
+	Pet findByPetType(String petType);
+
 }

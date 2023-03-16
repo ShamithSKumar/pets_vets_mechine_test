@@ -6,8 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.app.petsvets.model.LoginResponseModel;
+import com.app.petsvets.service.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -16,13 +20,24 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public class JwtServiceImpl {
+public class JwtServiceImpl implements JwtService {
 
 	private static final String KEY = "586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
 
-	public String generateToken(String username) {
+	/**
+	 * To generate token from user details
+	 * 
+	 * @param username
+	 * @param auth authenticated user details
+	 * @return response responseModel with token and user details
+	 */
+	public LoginResponseModel generateToken(String username, Authentication auth) {
 		Map<String, Object> claims = new HashMap<>();
-		return createToken(claims, username);
+		LoginResponseModel response = new LoginResponseModel();
+		response.setToken(createToken(claims, username));
+		response.setUserName(auth.getName());
+		response.setRole(auth.getAuthorities().stream().findFirst().get().toString());
+		return response;
 	}
 
 	/**

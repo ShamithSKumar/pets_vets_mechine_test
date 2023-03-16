@@ -25,5 +25,6 @@ public class UserPet {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="pet", referencedColumnName = "pet_id")
 	private Pet pet;
-	private Integer numberOfPets;
+	private Integer amount;
+	private String name;
 }

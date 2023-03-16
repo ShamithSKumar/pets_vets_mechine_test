@@ -47,6 +47,11 @@ public class PetServiceImpl implements PetService {
 		}
 		return petModel;
 	}
+
+	@Override
+	public Pet getPetByType(String petType) {
+		return petRepo.findByPetType(petType);
+	}
 	
 	
 }

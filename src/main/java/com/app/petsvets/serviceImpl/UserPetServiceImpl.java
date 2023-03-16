@@ -10,9 +10,9 @@ import com.app.petsvets.config.CustomException;
 import com.app.petsvets.config.EmptyArgumentException;
 import com.app.petsvets.entity.Pet;
 import com.app.petsvets.entity.UserPet;
-import com.app.petsvets.model.PetModel;
 import com.app.petsvets.model.UserPetModel;
 import com.app.petsvets.repository.UserPetRepository;
+import com.app.petsvets.service.PetService;
 import com.app.petsvets.service.UserPetService;
 import com.app.petsvets.service.UserService;
 
@@ -26,6 +26,8 @@ public class UserPetServiceImpl implements UserPetService {
 	private UserPetRepository userPetRepo;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private PetService petService;
 	
 	/**
 	 * {@inheritDoc}
@@ -36,9 +38,9 @@ public class UserPetServiceImpl implements UserPetService {
 	 *  @throws EmptyArgumentException
 	 */
 	@Override
-	public UserPetModel createUserPet(UserPetModel userPetModel) {
+	public UserPetModel createUserPet(UserPetModel userPetModel, String userName) {
 		if (userPetModel != null) {
-			UserPet userPetCreated = userPetRepo.save(setUserPet(userPetModel));
+			UserPet userPetCreated = userPetRepo.save(setUserPet(userPetModel, userName));
 			if (userPetCreated != null) {
 				userPetModel.setUserPetId(userPetCreated.getUserpetId());
 			}
@@ -54,16 +56,15 @@ public class UserPetServiceImpl implements UserPetService {
 	 * This method sets the user pet details to UserPet entity from the model
 	 * 
 	 * @param userPetModel Carries user pet details which can map to UserPet entity
+	 * @param userName 
 	 * @return userPet returns user pet entity
 	 */
-	private UserPet setUserPet(UserPetModel userPetModel) {
+	private UserPet setUserPet(UserPetModel userPetModel, String userName) {
 		UserPet userPet = new UserPet();
-		Pet pet = new Pet();
-		pet.setPetId(userPetModel.getPet().getPetId());
-		pet.setPetType(userPetModel.getPet().getPetType());
+		Pet pet = petService.getPetByType(userPetModel.getPetType());
 		userPet.setPet(pet);
-		userPet.setNumberOfPets(userPetModel.getNumberOfPets());
-		userPet.setUser(userService.findByUserName(userPetModel.getUserName()).get());
+		userPet.setAmount(userPetModel.getAmount());
+		userPet.setUser(userService.findByUserName(userName).get());
 		return userPet;
 	}
 
@@ -83,10 +84,10 @@ public class UserPetServiceImpl implements UserPetService {
 			if (!userPets.isEmpty()) {
 				for (UserPet userPet : userPets) {
 					UserPetModel userPetModel = new UserPetModel();
-					userPetModel.setNumberOfPets(userPet.getNumberOfPets());
+					userPetModel.setAmount(userPet.getAmount());
 					userPetModel.setUserPetId(userPet.getUserpetId());
-					userPetModel.setPet(setPetFromUserPet(userPet.getPet()));
-					userPetModel.setUserName(userPet.getUser().getUserName());
+					userPetModel.setPetType(userPet.getPet().getPetType());
+					userPetModel.setName(userPet.getName());
 					userPetList.add(userPetModel);
 				}
 			} else {
@@ -100,23 +101,9 @@ public class UserPetServiceImpl implements UserPetService {
 		return userPetList;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * To map pet details to pet model class
-	 * 
-	 * @param pet Contains pet entity details
-	 * @return petModel returns pet model which is created from pet entity
-	 */
-	private PetModel setPetFromUserPet(Pet pet) {
-		PetModel petModel = new PetModel();
-		petModel.setPetId(pet.getPetId());
-		petModel.setPetType(pet.getPetType());
-		return petModel;
-	}
-
 	@Override
-	public String updateUserPet(UserPetModel userPet) {
-		userPetRepo.save(setUserPet(userPet));
+	public String updateUserPet(UserPetModel userPet, String userName) {
+		userPetRepo.save(setUserPet(userPet, userName));
 		return "User updated successfully";
 	}
 

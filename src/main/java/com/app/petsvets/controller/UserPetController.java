@@ -38,9 +38,9 @@ public class UserPetController {
 	 */
 	@ResponseBody
 	@PostMapping("/create")
-	public ResponseEntity<UserPetModel> createUserPet(@RequestBody UserPetModel userPet) {
+	public ResponseEntity<UserPetModel> createUserPet(@RequestBody UserPetModel userPet, Authentication authentication) {
 		log.info("Enabled createUserPet endpoint");
-		UserPetModel userPetCreated = userPetService.createUserPet(userPet);
+		UserPetModel userPetCreated = userPetService.createUserPet(userPet, authentication.getName());
 		return new ResponseEntity<UserPetModel>(userPetCreated, HttpStatus.OK);
 	}
 
@@ -69,10 +69,10 @@ public class UserPetController {
 	 */
 	@ResponseBody
 	@PutMapping("/update")
-	public ResponseEntity<ResponseModel> updateUserPet(@RequestBody UserPetModel userPet) {
+	public ResponseEntity<ResponseModel> updateUserPet(@RequestBody UserPetModel userPet, Authentication authentication) {
 		log.info("Enabled updateUserPet endpoint");
 		ResponseModel result = new ResponseModel();
-		result.setData(userPetService.updateUserPet(userPet));
+		result.setData(userPetService.updateUserPet(userPet, authentication.getName()));
 		result.setMessage("Updated user pet details successfully");
 		result.setStatus(true);
 		return new ResponseEntity<ResponseModel>(result, HttpStatus.OK);

@@ -14,4 +14,6 @@ public interface PetService {
 
 	Optional<Pet> getPetsById(Integer petId);
 
+	Pet getPetByType(String petType);
+
 }
