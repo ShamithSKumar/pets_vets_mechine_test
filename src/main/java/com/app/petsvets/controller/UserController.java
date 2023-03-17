@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/user")
 public class UserController {
 
@@ -70,7 +69,7 @@ public class UserController {
 	 * @return List of UserModel
 	 */
 	@ResponseBody
-	@PreAuthorize("hasAuthority(ROLE_ADMIN)")
+//	@PreAuthorize("hasAuthority(ROLE_ADMIN)")
 	@GetMapping("/list")
 	public ResponseEntity<ResponseModel> getAllUsers() {
 		log.info("Enabled user list endpoint by admin");

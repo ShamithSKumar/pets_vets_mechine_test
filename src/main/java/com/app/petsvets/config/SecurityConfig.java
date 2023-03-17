@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,10 +46,11 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable()
 				.authorizeHttpRequests()
-				.requestMatchers("/user/login", "/user/create","/user/login").permitAll()
+				.requestMatchers(HttpMethod.POST).permitAll()
+				.requestMatchers("/user/login", "/user/create", "/userpet/**", "/pet/**", "/user/list").permitAll()
 				.and()
 				.authorizeHttpRequests()
-				.requestMatchers("/user/**","/pet/**","/userpet/**").authenticated()
+				.requestMatchers("/user/**", "/pet/**", "/userpet/**").authenticated()
 				.and()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

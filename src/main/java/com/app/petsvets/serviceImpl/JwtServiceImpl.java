@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.app.petsvets.model.LoginResponseModel;
 import com.app.petsvets.service.JwtService;
@@ -19,6 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+@Service
 @Component
 public class JwtServiceImpl implements JwtService {
 
