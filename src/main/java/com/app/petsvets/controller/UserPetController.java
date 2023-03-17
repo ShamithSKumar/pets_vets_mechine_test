@@ -60,6 +60,23 @@ public class UserPetController {
 	}
 
 	/**
+	 * To list pets mapped for an user by userName
+	 * 
+	 * @param userName userName to retrieve all the mapped pets
+	 * @return ResponseModel returns user pet list
+	 */
+	@ResponseBody
+	@GetMapping("/list/{userName}")
+	public ResponseEntity<ResponseModel> getPetsByUser(@PathVariable String userName) {
+		log.info("Enabled getPetsByUser endpoint");
+		ResponseModel result = new ResponseModel();
+		result.setData(userPetService.getPetsByUser(userName));
+		result.setMessage("User pet list fetched successfully");
+		result.setStatus(true);
+		return new ResponseEntity<ResponseModel>(result, HttpStatus.OK);
+	}
+	
+	/**
 	 * To update user pet details
 	 * 
 	 * @param userPet pet details which needs to modified
