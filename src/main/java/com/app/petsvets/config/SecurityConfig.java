@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,10 +43,9 @@ public class SecurityConfig {
 	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf().disable()
+		return http.cors().and().csrf().disable()
 				.authorizeHttpRequests()
-				.requestMatchers(HttpMethod.POST).permitAll()
-				.requestMatchers("/user/login", "/user/create", "/userpet/**", "/pet/**", "/user/list").permitAll()
+				.requestMatchers("/user/login", "/user/create").permitAll()
 				.and()
 				.authorizeHttpRequests()
 				.requestMatchers("/user/**", "/pet/**", "/userpet/**").authenticated()

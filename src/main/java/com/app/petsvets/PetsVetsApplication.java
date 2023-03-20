@@ -19,6 +19,7 @@ public class PetsVetsApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
+				.allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE")
 				.allowedOrigins("http://localhost:4200");
 			}
 		};
