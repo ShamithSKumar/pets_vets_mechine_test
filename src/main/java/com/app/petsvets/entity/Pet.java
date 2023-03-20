@@ -2,6 +2,7 @@ package com.app.petsvets.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +22,6 @@ public class Pet {
 	@Column(name = "pet_id", nullable = false)
 	private Integer petId;
 	private String petType;
-	@OneToMany(mappedBy = "pet")
+	@OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
 	private List<UserPet> userPets;
 }
