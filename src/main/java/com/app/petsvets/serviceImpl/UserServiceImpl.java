@@ -108,6 +108,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			user.setRole(ROLE);
 		} else {
 			user.setUserId(userModel.getId());
+			user.setPassword(userModel.getPassword());
+			user.setRole(userModel.getRole());
 		}
 		user.setEmail(userModel.getEmail());
 		user.setPhone(userModel.getPhone());
@@ -163,6 +165,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			if (!user.isPresent()) {
 				throw new CustomException("Admin cannot update user name");				
 			} else {
+				userModel.setRole(user.get().getRole());
+				userModel.setPassword(user.get().getPassword());
 				userRepo.save(setUser(userModel));
 			}
 		}
@@ -170,7 +174,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	private String getUserRole(Authentication authentication) {
-		return authentication.getAuthorities().stream().findFirst().toString();
+		return authentication.getAuthorities().stream().findFirst().get().toString();
 	}
 
 }

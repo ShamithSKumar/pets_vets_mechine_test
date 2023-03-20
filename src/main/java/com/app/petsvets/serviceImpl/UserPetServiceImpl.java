@@ -61,6 +61,8 @@ public class UserPetServiceImpl implements UserPetService {
 	 */
 	private UserPet setUserPet(UserPetModel userPetModel, String userName) {
 		UserPet userPet = new UserPet();
+		if (userPetModel.getUserPetId() != null) 
+			userPet.setUserpetId(userPetModel.getUserPetId());
 		Pet pet = petService.getPetByType(userPetModel.getPetType());
 		userPet.setPet(pet);
 		userPet.setAmount(userPetModel.getAmount());
