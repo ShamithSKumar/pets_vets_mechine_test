@@ -8,7 +8,7 @@ import com.app.petsvets.model.PetModel;
 
 public interface PetService {
 
-	List<Pet> getPetList();
+	List<PetModel> getPetList();
 
 	PetModel createPet(PetModel pet);
 

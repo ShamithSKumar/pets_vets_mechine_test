@@ -1,5 +1,6 @@
 package com.app.petsvets.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,16 @@ public class PetServiceImpl implements PetService {
 	private PetRepository petRepo;
 
 	@Override
-	public List<Pet> getPetList() {
-		return (List<Pet>) petRepo.findAll();
+	public List<PetModel> getPetList() {
+		Iterable<Pet> petList = petRepo.findAll();
+		List<PetModel> pets = new ArrayList<>(); 
+		for (Pet pet : petList) {
+			PetModel petModel = new PetModel();
+			petModel.setPetId(pet.getPetId());
+			petModel.setPetType(pet.getPetType());
+			pets.add(petModel);
+		}
+		return pets;
 	}
 
 	@Override
